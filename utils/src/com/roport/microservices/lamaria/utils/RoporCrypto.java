@@ -1,8 +1,6 @@
-package com.ropor.microservice.configuration.crypto;
+package com.roport.microservices.lamaria.utils;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
-import org.springframework.stereotype.Component;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -13,31 +11,28 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 
-@Component
-@Primary
 public class RoporCrypto implements TextEncryptor {
     KeyGenerator keygenerator;
     SecretKey myDesKey;
     Cipher desCipher;
     final int AES_KEYLENGTH = 128;
     byte[] iv;
-    SecureRandom prng;
+    IvParameterSpec parameter;
 
     public RoporCrypto() throws Exception{
         keygenerator = KeyGenerator.getInstance("AES");
         keygenerator.init(128);
         myDesKey = keygenerator.generateKey();
         iv = new byte[AES_KEYLENGTH / 8];
-        prng = new SecureRandom();
-        prng.nextBytes(iv);
         desCipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+        parameter = new IvParameterSpec(iv);
     }
 
     @Override
     public String encrypt(String string) {
         try{
             // Initialize the cipher for encryption
-            desCipher.init(Cipher.ENCRYPT_MODE, myDesKey, new IvParameterSpec(iv));
+            desCipher.init(Cipher.ENCRYPT_MODE, myDesKey, parameter);
 
             //sensitive information
             byte[] text = string.getBytes();
@@ -65,10 +60,11 @@ public class RoporCrypto implements TextEncryptor {
         try{
 
             // Initialize the same cipher for decryption
-            desCipher.init(Cipher.DECRYPT_MODE, myDesKey,new IvParameterSpec(iv));
+            desCipher.init(Cipher.DECRYPT_MODE, myDesKey, parameter);
 
+            byte[] decoded = new BASE64Decoder().decodeBuffer(string);
             // Decrypt the text
-            byte[] textDecrypted = desCipher.doFinal(new BASE64Decoder().decodeBuffer(string));
+            byte[] textDecrypted = desCipher.doFinal(decoded);
 
             String result = new String(textDecrypted);
             System.out.println("Text Decryted : " + result);

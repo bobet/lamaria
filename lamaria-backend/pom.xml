@@ -54,6 +54,12 @@
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-core</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-rsa -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-rsa</artifactId>
+			<version>1.0.5.RELEASE</version>
+		</dependency>
 
 		<dependency>
 			<groupId>mysql</groupId>

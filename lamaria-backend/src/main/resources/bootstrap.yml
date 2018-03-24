@@ -1,0 +1,12 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: lamaria_web_portal_backend
+  cloud:
+    config:
+      uri: http://localhost:8888
+
+encrypt:
+  key: roporcryptpass
+
